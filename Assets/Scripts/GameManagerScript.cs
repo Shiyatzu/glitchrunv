@@ -15,12 +15,16 @@ public class GameManagerScript : MonoBehaviour
     private GameObject LeaderboardButtons;
     [SerializeField]
     private GameObject GameOverScreen;
+    [SerializeField]
+    private GameObject SoundButtons;
+
 
     public PlayerController playercontroller;
     
     public int currentScore;
     private float startTime;
     //Vr variables
+    [SerializeField]
     private bool isVr = false;
     [SerializeField]
     private string targetVrDevice;
@@ -35,6 +39,7 @@ public class GameManagerScript : MonoBehaviour
     }
 
     public void MenuSwitch() {
+        VrStart.SetActive(false);
         MainMenu.SetActive(false);
         Gamestart();
     }
@@ -45,27 +50,33 @@ public class GameManagerScript : MonoBehaviour
     }
 
     private void VrStartStart() {
-        VrStart.SetActive(true);
         Invoke("VrStartEnd", 5f);
     }
 
     private void VrStartEnd() {
         VrStart.SetActive(false);
-        isVr = true;
         VROn();
         Gamestart();
     }
 
     public void Leaderbord() {
         MainMenuButtons.SetActive(false);
+        SoundButtons.SetActive(false);
         LeaderboardButtons.SetActive(true);
+    }
+    public void SoundMenu() {
+        MainMenuButtons.SetActive(false);
+        LeaderboardButtons.SetActive(false);
+        SoundButtons.SetActive(true);
     }
 
     public void BackToMenu() {
         playercontroller.enabled = false;
         LeaderboardButtons.SetActive(false);
+        SoundButtons.SetActive(false);
         MainMenu.SetActive(true);
         MainMenuButtons.SetActive(true);
+        VROff();
     }
 
     public void Gamestart() {
@@ -96,10 +107,12 @@ public class GameManagerScript : MonoBehaviour
 
     private void VROn() {
         StartCoroutine(LoadDevice(targetVrDevice));
+        isVr = true;
     }
 
     private void VROff() {
         StartCoroutine(UnloadDevice(string.Empty));
+        isVr = false;
     }
 
     IEnumerator LoadDevice(string newDevice) {
